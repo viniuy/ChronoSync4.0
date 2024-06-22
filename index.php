@@ -13,16 +13,16 @@ require_once 'global/head.php'
 	<!--**********************************
 	Main wrapper start
 ***********************************-->
- <!--*******************
+	<!--*******************
         Preloader start
     ********************-->
-    <!-- <div id="preloader">
+	<div id="preloader">
 		<div class="lds-ripple">
 			<div></div>
 			<div></div>
 		</div>
-    </div> -->
-    <!--*******************
+	</div>
+	<!--*******************
         Preloader end
     ********************-->
 
@@ -31,25 +31,25 @@ require_once 'global/head.php'
 		require_once 'global/nav_header.php';
 		require_once 'global/chatbox.php';
 		require_once 'global/header.php';
-		
-		
+
+
 		if (isset($_SESSION["admin"])) {
-			
+
 			require_once 'global/admin_sidebar.php';
 			require_once 'global/admin_index.php';
 		} else {
-			
+
 			require_once 'global/sidebar.php';
 			require_once 'global/index_home.php';
 		}
 		?>
 
-		
+
 		<!--**********************************
             Content body start
         ***********************************-->
 
-		
+
 
 		<!--**********************************
             Content body end

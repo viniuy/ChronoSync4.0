@@ -1,6 +1,8 @@
+
 <?php
-require_once('db.php');
 require_once './../auth/important/session.php';
+
+require_once './../auth/important/sqlconnect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
     // Validate file upload
@@ -30,11 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
     $file_name = basename($_FILES["file"]["name"]);
     $file_size = $_FILES["file"]["size"];
 
-    // Insert file details into database using a prepared statement
-    $stmt = $conn->prepare("INSERT INTO files (filename, filesize, created_at, user_id) VALUES (?, ?, NOW(), ?)");
-    $stmt->bind_param("sii", $file_name, $file_size, $user_id);
+    try {
+        // Insert file details into the database using a prepared statement
+        $stmt = $pdo->prepare("INSERT INTO files (filename, filesize, created_at, user_id) VALUES (?, ?, NOW(), ?)");
+        $stmt->execute([$file_name, $file_size, $user_id]);
 
-    if ($stmt->execute()) {
         // Move uploaded file to the uploads directory
         $target_dir = "uploads/";
         $target_file = $target_dir . $file_name;
@@ -42,20 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["file"])) {
         if (move_uploaded_file($_FILES["file"]["tmp_name"], $target_file)) {
             // Set success message in session variable
             $_SESSION['upload_success'] = "File uploaded successfully.";
-            header("Location: index.php"); // Redirect back to index.php
-            exit();
         } else {
             $_SESSION['upload_error'] = "Error moving file to destination.";
-            header("Location: index.php");
-            exit();
         }
-    } else {
-        $_SESSION['upload_error'] = "Database error: " . $stmt->error;
-        header("Location: index.php");
-        exit();
+    } catch (PDOException $e) {
+        $_SESSION['upload_error'] = "Database error: " . $e->getMessage();
     }
 
-    // Close the prepared statement
-    $stmt->close();
+    // Redirect back to index.php
+    header("Location: index.php");
+    exit();
 }
-?>

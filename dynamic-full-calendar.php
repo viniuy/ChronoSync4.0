@@ -68,6 +68,7 @@ $user_id = $_SESSION["user_id"];
 			<div class="col-lg-3 ">
 				<!-- <h5>Calendars</h5> -->
 				<button class="btn btn-primary  mb-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
+<<<<<<< Updated upstream
 
 				<div class="btn-group mb-3 btn-group-xss">
 					<button class="btn btn-primary pl-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">x</button>
@@ -79,6 +80,23 @@ $user_id = $_SESSION["user_id"];
 				</div>
 				<!-- Buttons -->
 				<!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
+=======
+				
+                <div class="btn-group mb-3 btn-group-xss">
+				<button class="btn btn-primary pl-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">
+				<i class="bi bi-send"></i>
+				</button>
+                <button class="btn btn-primary " data-toggle="modal" data-target="#uploadCSVModal">
+				<i class="bi bi-filetype-csv"></i>
+				</button>
+                </div>
+				
+                <div id="calendar_names" class="list-group">
+                    <!-- Calendar names will be populated here with checkboxes -->
+                </div>
+                <!-- Buttons -->
+                <!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
+>>>>>>> Stashed changes
                 <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">Share Calendar</button>
                 <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#uploadCSVModal">Batch Upload</button> -->
 			</div>

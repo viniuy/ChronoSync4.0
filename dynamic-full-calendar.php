@@ -7,10 +7,12 @@ if (!isset($_SESSION["user_email"])) {
 $user_id = $_SESSION["user_id"];
 ?>
 
+
 <!DOCTYPE html>
 <html>
 
 <head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-o26qTkZlA7PASyqyf6hooTrkog5JbN0wZ2T+KD0Vc1W24rD0qzU0qzU+rRxyaPm+Dn8qhz7k6jB0N89Iu7uJrHwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<style>
@@ -50,30 +52,38 @@ $user_id = $_SESSION["user_id"];
 </head>
 
 <body>
-	<div class="container">
-		<div class="row">
-			<!-- Left column for calendar names -->
-			<div class="col-lg-3">
-				<h5>Calendars</h5>
-				<div id="calendar_names" class="list-group">
-					<!-- Calendar names will be populated here with checkboxes -->
-				</div>
-				<!-- Button to add new calendar -->
-				<button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
-				<button class="btn btn-primary mt-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">Share Calendar</button>
-				<button class="btn btn-primary mt-3" data-toggle="modal" data-target="#uploadCSVModal">Batch Upload</button>
-			</div>
-			<!-- Right column for the calendar -->
-			<div class="col-lg-9">
-				<div id="selected_calendar_container">
-					<div id="calendar"></div>
-				</div>
-				<!-- List to display selected calendars -->
-				<ul id="selected_calendar_list"></ul>
-			</div>
-		</div>
-	</div>
+<div class="container mt-3">
+        <div class="row">
+            <!-- Left column for the calendar -->
+			 
+            <div class="col-lg-9">
+                <div id="selected_calendar_container">
+                    <div id="calendar"></div>
+                </div>
+                <!-- List to display selected calendars -->
+                <ul id="selected_calendar_list"></ul>
+            </div>
 
+            <!-- Right column for calendar names and buttons -->
+            <div class="col-lg-3 ">
+                <!-- <h5>Calendars</h5> -->
+				<button class="btn btn-primary  mb-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
+				
+                <div class="btn-group mb-3 btn-group-xss">
+				<button class="btn btn-primary pl-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">x</button>
+                <button class="btn btn-primary " data-toggle="modal" data-target="#uploadCSVModal">s</button>
+                </div>
+				
+                <div id="calendar_names" class="list-group">
+                    <!-- Calendar names will be populated here with checkboxes -->
+                </div>
+                <!-- Buttons -->
+                <!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
+                <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">Share Calendar</button>
+                <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#uploadCSVModal">Batch Upload</button> -->
+            </div>
+        </div>
+    </div>
 	<!-- Event Detail Modal -->
 	<div class="modal fade" id="event_detail_modals" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
@@ -536,13 +546,15 @@ $user_id = $_SESSION["user_id"];
 						dropdownContainer.classList.add('dropdown');
 
 						let dropdownButton = document.createElement('button');
-						dropdownButton.classList.add('btn', 'btn-secondary', 'btn-sm', 'dropdown-toggle');
+						dropdownButton.classList.add('btn', 'btn-link', 'btn-sm', 'dropdown-toggle');
 						dropdownButton.type = 'button';
 						dropdownButton.id = `dropdownMenuButton${calendar.calendar_id}`;
 						dropdownButton.setAttribute('data-toggle', 'dropdown');
 						dropdownButton.setAttribute('aria-haspopup', 'true');
 						dropdownButton.setAttribute('aria-expanded', 'false');
+						// icon for 3 dots
 						dropdownButton.textContent = '';
+						
 
 						let dropdownMenu = document.createElement('div');
 						dropdownMenu.classList.add('dropdown-menu');

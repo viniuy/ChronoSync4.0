@@ -16,12 +16,12 @@ require_once 'global/head.php'
  <!--*******************
         Preloader start
     ********************-->
-    <div id="preloader">
+    <!-- <div id="preloader">
 		<div class="lds-ripple">
 			<div></div>
 			<div></div>
 		</div>
-    </div>
+    </div> -->
     <!--*******************
         Preloader end
     ********************-->

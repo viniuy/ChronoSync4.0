@@ -40,11 +40,10 @@ $user_id = $_SESSION["user_id"];
 	<link href="./css/full_calendar.css" rel="stylesheet" />
 	<!-- JS for jQuery -->
 
-	<!-- JS for full calendar -->
-	<script src="./js/ajax_fullcalendar.js"></script>
-	<script src="./js/fullcalendar.js"></script>
 	<!-- bootstrap css and js -->
 	<link rel="stylesheet" href="./css/bootstrap.css" />
+	<script src="./js/ajax_fullcalendar.js"></script>
+	<script src="./js/fullcalendar.js"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

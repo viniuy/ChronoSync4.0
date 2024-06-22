@@ -17,7 +17,21 @@ try {
         WHERE calendar.user_id = :user_id OR shared_calendars.user_id = :user_id
     ");
     $stmt->execute(['user_id' => $user_id]);
-    $calendars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $calendars = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        // Check if calendar with the same id and name already exists in $calendars array
+        $exists = false;
+        foreach ($calendars as $calendar) {
+            if ($calendar['calendar_id'] == $row['calendar_id'] && $calendar['calendar_name'] == $row['calendar_name']) {
+                $exists = true;
+                break;
+            }
+        }
+        if (!$exists) {
+            $calendars[] = $row;
+        }
+    }
 
     $data = array(
         'status' => true,

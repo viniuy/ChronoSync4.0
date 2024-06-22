@@ -37,14 +37,15 @@ $user_id = $_SESSION["user_id"];
 		-->
 	<link href="./css/full_calendar.css" rel="stylesheet" />
 	<!-- JS for jQuery -->
-	<script src="./js/jquery.js"></script>
+
 	<!-- JS for full calendar -->
 	<script src="./js/ajax_fullcalendar.js"></script>
 	<script src="./js/fullcalendar.js"></script>
 	<!-- bootstrap css and js -->
 	<link rel="stylesheet" href="./css/bootstrap.css" />
-	<script src="./js/bootstrap.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-o26qTkZlA7PASyqyf6hooTrkog5JbN0wZ2T+KD0Vc1W24rD0qzU0q+rRxyaPm+Dn8qhz7k6jB0N89Iu7uJrHwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
@@ -541,24 +542,34 @@ $user_id = $_SESSION["user_id"];
 						dropdownButton.setAttribute('data-toggle', 'dropdown');
 						dropdownButton.setAttribute('aria-haspopup', 'true');
 						dropdownButton.setAttribute('aria-expanded', 'false');
-						dropdownButton.textContent = '...';
+						dropdownButton.textContent = '';
 
 						let dropdownMenu = document.createElement('div');
 						dropdownMenu.classList.add('dropdown-menu');
 						dropdownMenu.setAttribute('aria-labelledby', `dropdownMenuButton${calendar.calendar_id}`);
 
+						// Edit option
 						let editOption = document.createElement('a');
 						editOption.classList.add('dropdown-item');
 						editOption.href = '#';
 						editOption.textContent = 'Edit';
+						dropdownMenu.appendChild(editOption);
 
+						// Delete option
 						let deleteOption = document.createElement('a');
 						deleteOption.classList.add('dropdown-item');
 						deleteOption.href = '#';
 						deleteOption.textContent = 'Delete';
-
-						dropdownMenu.appendChild(editOption);
 						dropdownMenu.appendChild(deleteOption);
+
+						// Share option
+						if (calendar.can_share) { // Assuming `can_share` is a boolean indicating permission to share
+							let shareOption = document.createElement('a');
+							shareOption.classList.add('dropdown-item');
+							shareOption.href = '#';
+							shareOption.textContent = 'Share';
+							dropdownMenu.appendChild(shareOption);
+						}
 
 						dropdownContainer.appendChild(dropdownButton);
 						dropdownContainer.appendChild(dropdownMenu);
@@ -760,9 +771,11 @@ $user_id = $_SESSION["user_id"];
 					} else {
 						Swal.fire({
 							title: "Error adding calendar",
-							text: "It seems that we have encountered an error while adding the calendar",
+							text: "Calendar Already Exists",
 							icon: "error"
 						});
+
+						$('#addCalendarModal').modal('hide');
 					}
 				})
 				.catch(error => console.error('Error adding calendar:', error));

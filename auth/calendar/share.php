@@ -28,13 +28,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Share with a user
         if ($share_with == 'user') {
-            // Ensure not sharing with the current owner
-            if ($user_id != $current_user_id) {
-                $stmt = $pdo->prepare("INSERT INTO shared_calendars (calendar_id, user_id, role) VALUES (:calendar_id, :user_id, :role)");
-                $stmt->execute(['calendar_id' => $calendar['calendar_id'], 'user_id' => $user_id, 'role' => $role]);
-            } else {
-                throw new Exception("Cannot share calendar with yourself.");
+            // Check if already shared with this user
+            $stmt = $pdo->prepare("SELECT COUNT(*) AS count FROM shared_calendars WHERE calendar_id = :calendar_id AND user_id = :user_id");
+            $stmt->execute(['calendar_id' => $calendar['calendar_id'], 'user_id' => $user_id]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result['count'] > 0) {
+                throw new Exception("Calendar already shared with this user.");
             }
+
+            // Share with the user
+            $stmt = $pdo->prepare("INSERT INTO shared_calendars (calendar_id, user_id, role) VALUES (:calendar_id, :user_id, :role)");
+            $stmt->execute(['calendar_id' => $calendar['calendar_id'], 'user_id' => $user_id, 'role' => $role]);
         }
         // Share with a group
         else if ($share_with == 'group') {
@@ -44,8 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($users as $user) {
-                // Ensure not sharing with the current owner
-                if ($user['id'] != $current_user_id) {
+                // Check if already shared with this user
+                $stmt = $pdo->prepare("SELECT COUNT(*) AS count FROM shared_calendars WHERE calendar_id = :calendar_id AND user_id = :user_id");
+                $stmt->execute(['calendar_id' => $calendar['calendar_id'], 'user_id' => $user['id']]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($result['count'] == 0 && $user['id'] != $current_user_id) {
+                    // Share with the user
                     $stmt = $pdo->prepare("INSERT INTO shared_calendars (calendar_id, user_id, role) VALUES (:calendar_id, :user_id, :role)");
                     $stmt->execute(['calendar_id' => $calendar['calendar_id'], 'user_id' => $user['id'], 'role' => $role]);
                 }

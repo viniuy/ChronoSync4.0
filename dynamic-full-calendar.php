@@ -44,6 +44,7 @@ $user_id = $_SESSION["user_id"];
 	<link rel="stylesheet" href="./css/bootstrap.css" />
 	<script src="./js/ajax_fullcalendar.js"></script>
 	<script src="./js/fullcalendar.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -51,38 +52,38 @@ $user_id = $_SESSION["user_id"];
 </head>
 
 <body>
-<div class="container mt-3">
-        <div class="row">
-            <!-- Left column for the calendar -->
-			 
-            <div class="col-lg-9">
-                <div id="selected_calendar_container">
-                    <div id="calendar"></div>
-                </div>
-                <!-- List to display selected calendars -->
-                <ul id="selected_calendar_list"></ul>
-            </div>
+	<div class="container mt-3">
+		<div class="row">
+			<!-- Left column for the calendar -->
 
-            <!-- Right column for calendar names and buttons -->
-            <div class="col-lg-3 ">
-                <!-- <h5>Calendars</h5> -->
+			<div class="col-lg-9">
+				<div id="selected_calendar_container">
+					<div id="calendar"></div>
+				</div>
+				<!-- List to display selected calendars -->
+				<ul id="selected_calendar_list"></ul>
+			</div>
+
+			<!-- Right column for calendar names and buttons -->
+			<div class="col-lg-3 ">
+				<!-- <h5>Calendars</h5> -->
 				<button class="btn btn-primary  mb-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
-				
-                <div class="btn-group mb-3 btn-group-xss">
-				<button class="btn btn-primary pl-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">x</button>
-                <button class="btn btn-primary " data-toggle="modal" data-target="#uploadCSVModal">s</button>
-                </div>
-				
-                <div id="calendar_names" class="list-group">
-                    <!-- Calendar names will be populated here with checkboxes -->
-                </div>
-                <!-- Buttons -->
-                <!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
+
+				<div class="btn-group mb-3 btn-group-xss">
+					<button class="btn btn-primary pl-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">x</button>
+					<button class="btn btn-primary " data-toggle="modal" data-target="#uploadCSVModal">s</button>
+				</div>
+
+				<div id="calendar_names" class="list-group">
+					<!-- Calendar names will be populated here with checkboxes -->
+				</div>
+				<!-- Buttons -->
+				<!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
                 <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">Share Calendar</button>
                 <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#uploadCSVModal">Batch Upload</button> -->
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 	<!-- Event Detail Modal -->
 	<div class="modal fade" id="event_detail_modals" tabindex="-1" aria-labelledby="eventDetailModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
@@ -553,7 +554,7 @@ $user_id = $_SESSION["user_id"];
 						dropdownButton.setAttribute('aria-expanded', 'false');
 						// icon for 3 dots
 						dropdownButton.textContent = '';
-						
+
 
 						let dropdownMenu = document.createElement('div');
 						dropdownMenu.classList.add('dropdown-menu');

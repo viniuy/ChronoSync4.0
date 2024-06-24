@@ -46,7 +46,7 @@ $user_id = $_SESSION["user_id"];
 	<script src="./js/fullcalendar.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-o26qTkZlA7PASyqyf6hooTrkog5JbN0wZ2T+KD0Vc1W24rD0qzU0q+rRxyaPm+Dn8qhz7k6jB0N89Iu7uJrHwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -218,6 +218,32 @@ $user_id = $_SESSION["user_id"];
 		</div>
 	</div>
 
+	<!-- Edit Calendar Modal -->
+	<div class="modal fade" id="editCalendarModal" tabindex="-1" role="dialog" aria-labelledby="editCalendarModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-md" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editCalendarModal">Edit Calendar </h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="editCalendarForm" enctype="multipart/form-data">
+						<div class="form-group" id="user_id_group">
+							<label for="calendar_namer">Calendar Name:</label>
+							<input type="text" name="calendar_namer" id="calendar_namer" class="form-control" placeholder="z">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" onclick="editCalendarName()">Confirm Edit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Start popup dialog box -->
 	<div class="modal fade" id="event_entry_modaled" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-md" role="document">
@@ -321,13 +347,6 @@ $user_id = $_SESSION["user_id"];
 		display_events();
 	});
 
-	document.addEventListener('click', function(event) {
-		var isClickInsideDropdown = event.target.closest('.dropdown') !== null;
-		if (!isClickInsideDropdown) {
-			closeAllDropdowns();
-		}
-	});
-
 	function uploadCSV() {
 
 		var user_id = <?php echo json_encode($user_id); ?>;
@@ -391,19 +410,6 @@ $user_id = $_SESSION["user_id"];
 		});
 	}
 
-	function toggleDropdown(id) {
-		closeAllDropdowns();
-		var dropdown = document.getElementById(`dropdownMenuDropMe${id}`);
-		dropdown.style.display = 'block';
-	}
-
-	function closeAllDropdowns() {
-		var dropdowns = document.getElementsByClassName('dropdown-menu');
-		for (var i = 0; i < dropdowns.length; i++) {
-			dropdowns[i].style.display = 'none';
-		}
-	}
-
 	function shareCalendar() {
 		var user_id = <?php echo json_encode($user_id); ?>;
 		var formData = new FormData(document.getElementById('shareCalendarForm'));
@@ -461,6 +467,59 @@ $user_id = $_SESSION["user_id"];
 				console.error('Error fetching groups:', error);
 			}
 		});
+	}
+
+	function editCalendarName(calendar) {
+		var user_id = <?php echo json_encode($user_id); ?>;
+		var old_name = document.getElementById('calendar_namer').placeholder;
+		var formData = new FormData(document.getElementById('editCalendarForm'));
+
+		$.ajax({
+			url: '../auth/calendar/edit_calendar_name.php',
+			method: 'POST',
+			data: {
+				user_id: user_id,
+				old_name: old_name,
+				formData: formData
+			},
+			success: function(response) {
+				console.log('Event updated successfully');
+			},
+			error: function(xhr, status, error) {
+				console.error('Error updating event:', error);
+			}
+		});
+
+	}
+
+	// Function to open edit modal
+	function openEditModal(calendar) {
+		// Implement logic to show edit modal for the calendar
+
+		document.getElementById('calendar_namer').placeholder = calendar.calendar_name;
+		$('#editCalendarModal').modal('show');
+		// Example: $('#editModal').modal('show'); // Using jQuery for modal
+	}
+
+	// Function to open delete modal
+	function openDeleteModal(calendar) {
+		// Implement logic to show delete modal for the calendar
+		console.log('Opening delete modal for calendar:', calendar);
+		// Example: $('#deleteModal').modal('show'); // Using jQuery for modal
+	}
+
+	// Function to open share modal
+	function openShareModal(calendar) {
+		populateCalendarDropdown();
+
+		let calendarSelectShare = document.getElementById('calendar_select');
+		calendarSelectShare.innerHTML = '';
+		let shareOption = document.createElement('option');
+		shareOption.value = calendar.calendar_id;
+		shareOption.textContent = calendar.calendar_name;
+		calendarSelectShare.appendChild(shareOption);
+		$('#shareCalendarModal').modal('show');
+
 	}
 
 	// Function to populate the calendar dropdown based on checked checkboxes
@@ -546,6 +605,8 @@ $user_id = $_SESSION["user_id"];
 
 					let sharedCalendars = data.calendars.filter(calendar => calendar.is_shared);
 					let personalCalendars = data.calendars.filter(calendar => !calendar.is_shared);
+					console.log(sharedCalendars);
+					console.log(personalCalendars);
 
 					// Function to create calendar items
 					function createCalendarItem(calendar) {
@@ -573,37 +634,38 @@ $user_id = $_SESSION["user_id"];
 						dropdownButton.classList.add('btn', 'btn-link', 'btn-sm', 'dropdown-toggle');
 						dropdownButton.type = 'button';
 						dropdownButton.id = `dropdownMenuButton${calendar.calendar_id}`;
-						dropdownButton.setAttribute('onclick', `toggleDropdown(${calendar.calendar_id})`);
+						dropdownButton.setAttribute('data-toggle', 'dropdown');
 						dropdownButton.setAttribute('aria-haspopup', 'true');
 						dropdownButton.setAttribute('aria-expanded', 'false');
 						// icon for 3 dots
+						dropdownButton.textContent = '';
+
 
 						let dropdownMenu = document.createElement('div');
 						dropdownMenu.classList.add('dropdown-menu');
-						dropdownMenu.id = `dropdownMenuDropMe${calendar.calendar_id}`;
 						dropdownMenu.setAttribute('aria-labelledby', `dropdownMenuButton${calendar.calendar_id}`);
-						dropdownMenu.style.display = 'none'; // Initially hidden
 
 						// Edit option
 						let editOption = document.createElement('a');
 						editOption.classList.add('dropdown-item');
-						editOption.href = '#';
+						editOption.addEventListener('click', () => openEditModal(calendar));
 						editOption.textContent = 'Edit';
 						dropdownMenu.appendChild(editOption);
 
 						// Delete option
 						let deleteOption = document.createElement('a');
 						deleteOption.classList.add('dropdown-item');
-						deleteOption.href = '#';
+						deleteOption.addEventListener('click', () => openDeleteModal(calendar));
 						deleteOption.textContent = 'Delete';
 						dropdownMenu.appendChild(deleteOption);
 
 						// Share option
-						if (calendar.can_share) { // Assuming `can_share` is a boolean indicating permission to share
+						if (!calendar.is_shared == 1) { // Assuming `can_share` is a boolean indicating permission to share
 							let shareOption = document.createElement('a');
 							shareOption.classList.add('dropdown-item');
 							shareOption.href = '#';
 							shareOption.textContent = 'Share';
+							shareOption.addEventListener('click', () => openShareModal(calendar));
 							dropdownMenu.appendChild(shareOption);
 						}
 
@@ -645,6 +707,7 @@ $user_id = $_SESSION["user_id"];
 			})
 			.catch(error => console.error('Error fetching calendar names:', error));
 	}
+
 
 
 

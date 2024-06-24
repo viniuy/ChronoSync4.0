@@ -70,19 +70,19 @@ $user_id = $_SESSION["user_id"];
 				<button class="btn btn-primary  mb-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
 
 				<div class="btn-group mb-3 btn-group-xss">
-				<button class="btn btn-primary pl-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">
-				<i class="bi bi-send"></i>
-				</button>
-                <button class="btn btn-primary " data-toggle="modal" data-target="#uploadCSVModal">
-				<i class="bi bi-filetype-csv"></i>
-				</button>
-                </div>
-				
-                <div id="calendar_names" class="list-group">
-                    <!-- Calendar names will be populated here with checkboxes -->
-                </div>
-                <!-- Buttons -->
-                <!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
+					<button class="btn btn-primary pl-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">
+						<i class="bi bi-send"></i>
+					</button>
+					<button class="btn btn-primary " data-toggle="modal" data-target="#uploadCSVModal">
+						<i class="bi bi-filetype-csv"></i>
+					</button>
+				</div>
+
+				<div id="calendar_names" class="list-group">
+					<!-- Calendar names will be populated here with checkboxes -->
+				</div>
+				<!-- Buttons -->
+				<!-- <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#addCalendarModal">Add New Calendar</button>
                 <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#shareCalendarModal" data-calendar-id="123">Share Calendar</button>
                 <button class="btn btn-primary mt-3" data-toggle="modal" data-target="#uploadCSVModal">Batch Upload</button> -->
 			</div>
@@ -321,6 +321,13 @@ $user_id = $_SESSION["user_id"];
 		display_events();
 	});
 
+	document.addEventListener('click', function(event) {
+		var isClickInsideDropdown = event.target.closest('.dropdown') !== null;
+		if (!isClickInsideDropdown) {
+			closeAllDropdowns();
+		}
+	});
+
 	function uploadCSV() {
 
 		var user_id = <?php echo json_encode($user_id); ?>;
@@ -382,6 +389,19 @@ $user_id = $_SESSION["user_id"];
 				});
 			}
 		});
+	}
+
+	function toggleDropdown(id) {
+		closeAllDropdowns();
+		var dropdown = document.getElementById(`dropdownMenuDropMe${id}`);
+		dropdown.style.display = 'block';
+	}
+
+	function closeAllDropdowns() {
+		var dropdowns = document.getElementsByClassName('dropdown-menu');
+		for (var i = 0; i < dropdowns.length; i++) {
+			dropdowns[i].style.display = 'none';
+		}
 	}
 
 	function shareCalendar() {
@@ -553,16 +573,16 @@ $user_id = $_SESSION["user_id"];
 						dropdownButton.classList.add('btn', 'btn-link', 'btn-sm', 'dropdown-toggle');
 						dropdownButton.type = 'button';
 						dropdownButton.id = `dropdownMenuButton${calendar.calendar_id}`;
-						dropdownButton.setAttribute('data-toggle', 'dropdown');
+						dropdownButton.setAttribute('onclick', `toggleDropdown(${calendar.calendar_id})`);
 						dropdownButton.setAttribute('aria-haspopup', 'true');
 						dropdownButton.setAttribute('aria-expanded', 'false');
 						// icon for 3 dots
-						dropdownButton.textContent = '';
-
 
 						let dropdownMenu = document.createElement('div');
 						dropdownMenu.classList.add('dropdown-menu');
+						dropdownMenu.id = `dropdownMenuDropMe${calendar.calendar_id}`;
 						dropdownMenu.setAttribute('aria-labelledby', `dropdownMenuButton${calendar.calendar_id}`);
+						dropdownMenu.style.display = 'none'; // Initially hidden
 
 						// Edit option
 						let editOption = document.createElement('a');
@@ -625,7 +645,6 @@ $user_id = $_SESSION["user_id"];
 			})
 			.catch(error => console.error('Error fetching calendar names:', error));
 	}
-
 
 
 

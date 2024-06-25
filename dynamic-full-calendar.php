@@ -238,7 +238,7 @@ $user_id = $_SESSION["user_id"];
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" onclick="editCalendarName()">Confirm Edit</button>
+					<button type="button" id="submitEditCalendar" class="btn btn-primary">Confirm Edit</button>
 				</div>
 			</div>
 		</div>
@@ -324,6 +324,10 @@ $user_id = $_SESSION["user_id"];
 
 		$('#submitShareCalendar').on('click', function() {
 			shareCalendar();
+		});
+
+		$('#submitEditCalendar').on('click', function() {
+			editCalendarName();
 		});
 
 		$('#share_with').on('change', function() {
@@ -469,28 +473,85 @@ $user_id = $_SESSION["user_id"];
 		});
 	}
 
-	function editCalendarName(calendar) {
+	function deleteCalendar(calendarName) {
+		var user_id = <?php echo json_encode($user_id); ?>;
+
+		$.ajax({
+			url: '../auth/calendar/delete_calendar_name.php',
+			method: 'POST',
+			data: {
+				user_id: user_id,
+				calendar_name: calendarName.calendar_name
+			},
+			success: function(response) {
+				if (response.status) {
+					Swal.fire({
+						title: "Deleted!",
+						text: "Successfully Deleted Calendar",
+						icon: "success"
+					});
+				} else {
+					Swal.fire({
+						title: "Error!",
+						text: "Error occured when deleting your calendar",
+						icon: "error"
+					});
+				}
+			},
+			error: function(xhr, status, error) {
+				Swal.fire({
+					title: "Error!",
+					text: "Error occured when deleting your calendar",
+					icon: "error"
+				});
+			}
+		});
+
+		fetchCalendarNames(user_id);
+	}
+
+	function editCalendarName() {
 		var user_id = <?php echo json_encode($user_id); ?>;
 		var old_name = document.getElementById('calendar_namer').placeholder;
 		var formData = new FormData(document.getElementById('editCalendarForm'));
 
+		// Append additional data to the FormData object
+		formData.append('user_id', user_id);
+		formData.append('old_name', old_name);
+
+		$('#editCalendarModal').modal('hide');
 		$.ajax({
 			url: '../auth/calendar/edit_calendar_name.php',
 			method: 'POST',
-			data: {
-				user_id: user_id,
-				old_name: old_name,
-				formData: formData
-			},
+			data: formData,
+			processData: false, // Important!
+			contentType: false, // Important!
 			success: function(response) {
-				console.log('Event updated successfully');
+				if (response.status) {
+					Swal.fire({
+						title: "Success!",
+						text: "Successfully Edited Calendar",
+						icon: "success"
+					});
+				} else {
+					Swal.fire({
+						title: "Error",
+						text: "Calendar Name Already Exists or and Error Occured",
+						icon: "error"
+					});
+				}
 			},
 			error: function(xhr, status, error) {
-				console.error('Error updating event:', error);
+				Swal.fire({
+					title: "Error",
+					text: "Calendar Name Already Exists or and Error Occured",
+					icon: "error"
+				});
 			}
 		});
-
+		fetchCalendarNames(user_id);
 	}
+
 
 	// Function to open edit modal
 	function openEditModal(calendar) {
@@ -503,9 +564,23 @@ $user_id = $_SESSION["user_id"];
 
 	// Function to open delete modal
 	function openDeleteModal(calendar) {
-		// Implement logic to show delete modal for the calendar
-		console.log('Opening delete modal for calendar:', calendar);
-		// Example: $('#deleteModal').modal('show'); // Using jQuery for modal
+		// Use SweetAlert to show a confirmation dialog
+		Swal.fire({
+				title: "Are you sure?",
+				text: "Do you really want to delete the calendar '" + calendar.calendar_name + "'? This action cannot be undone.",
+				icon: "warning",
+				buttons: true,
+				dangerMode: true,
+			})
+			.then((willDelete) => {
+				if (willDelete) {
+					// User confirmed, call the deleteCalendar function
+					deleteCalendar(calendar);
+				} else {
+					// User canceled, do nothing
+					console.log('Delete action was canceled');
+				}
+			});
 	}
 
 	// Function to open share modal
@@ -609,7 +684,7 @@ $user_id = $_SESSION["user_id"];
 					console.log(personalCalendars);
 
 					// Function to create calendar items
-					function createCalendarItem(calendar) {
+					function createCalendarItem(calendar, isShared) {
 						let calendarItem = document.createElement('div');
 						calendarItem.classList.add('list-group-item', 'd-flex', 'align-items-center', 'justify-content-between');
 
@@ -626,53 +701,52 @@ $user_id = $_SESSION["user_id"];
 						checkboxContainer.appendChild(document.createTextNode(calendar.calendar_name));
 						calendarItem.appendChild(checkboxContainer);
 
-						// Create "..." button with dropdown menu
-						let dropdownContainer = document.createElement('div');
-						dropdownContainer.classList.add('dropdown');
+						if (!isShared) {
+							let dropdownContainer = document.createElement('div');
+							dropdownContainer.classList.add('dropdown');
 
-						let dropdownButton = document.createElement('button');
-						dropdownButton.classList.add('btn', 'btn-link', 'btn-sm', 'dropdown-toggle');
-						dropdownButton.type = 'button';
-						dropdownButton.id = `dropdownMenuButton${calendar.calendar_id}`;
-						dropdownButton.setAttribute('data-toggle', 'dropdown');
-						dropdownButton.setAttribute('aria-haspopup', 'true');
-						dropdownButton.setAttribute('aria-expanded', 'false');
-						// icon for 3 dots
-						dropdownButton.textContent = '';
+							let dropdownButton = document.createElement('button');
+							dropdownButton.classList.add('btn', 'btn-link', 'btn-sm', 'dropdown-toggle');
+							dropdownButton.type = 'button';
+							dropdownButton.id = `dropdownMenuButton${calendar.calendar_id}`;
+							dropdownButton.setAttribute('data-toggle', 'dropdown');
+							dropdownButton.setAttribute('aria-haspopup', 'true');
+							dropdownButton.setAttribute('aria-expanded', 'false');
 
+							let dropdownMenu = document.createElement('div');
+							dropdownMenu.classList.add('dropdown-menu');
+							dropdownMenu.setAttribute('aria-labelledby', `dropdownMenuButton${calendar.calendar_id}`);
 
-						let dropdownMenu = document.createElement('div');
-						dropdownMenu.classList.add('dropdown-menu');
-						dropdownMenu.setAttribute('aria-labelledby', `dropdownMenuButton${calendar.calendar_id}`);
+							// Edit option
+							let editOption = document.createElement('a');
+							editOption.classList.add('dropdown-item');
+							editOption.addEventListener('click', () => openEditModal(calendar));
+							editOption.textContent = 'Edit';
+							dropdownMenu.appendChild(editOption);
 
-						// Edit option
-						let editOption = document.createElement('a');
-						editOption.classList.add('dropdown-item');
-						editOption.addEventListener('click', () => openEditModal(calendar));
-						editOption.textContent = 'Edit';
-						dropdownMenu.appendChild(editOption);
+							// Delete option
+							let deleteOption = document.createElement('a');
+							deleteOption.classList.add('dropdown-item');
+							deleteOption.addEventListener('click', () => openDeleteModal(calendar));
+							deleteOption.textContent = 'Delete';
+							dropdownMenu.appendChild(deleteOption);
 
-						// Delete option
-						let deleteOption = document.createElement('a');
-						deleteOption.classList.add('dropdown-item');
-						deleteOption.addEventListener('click', () => openDeleteModal(calendar));
-						deleteOption.textContent = 'Delete';
-						dropdownMenu.appendChild(deleteOption);
+							// Share option
+							if (!calendar.is_shared) { // Assuming `can_share` is a boolean indicating permission to share
+								let shareOption = document.createElement('a');
+								shareOption.classList.add('dropdown-item');
+								shareOption.href = '#';
+								shareOption.textContent = 'Share';
+								shareOption.addEventListener('click', () => openShareModal(calendar));
+								dropdownMenu.appendChild(shareOption);
+							}
 
-						// Share option
-						if (!calendar.is_shared == 1) { // Assuming `can_share` is a boolean indicating permission to share
-							let shareOption = document.createElement('a');
-							shareOption.classList.add('dropdown-item');
-							shareOption.href = '#';
-							shareOption.textContent = 'Share';
-							shareOption.addEventListener('click', () => openShareModal(calendar));
-							dropdownMenu.appendChild(shareOption);
+							dropdownContainer.appendChild(dropdownButton);
+							dropdownContainer.appendChild(dropdownMenu);
+
+							calendarItem.appendChild(dropdownContainer);
 						}
 
-						dropdownContainer.appendChild(dropdownButton);
-						dropdownContainer.appendChild(dropdownMenu);
-
-						calendarItem.appendChild(dropdownContainer);
 						calendarNamesContainer.appendChild(calendarItem);
 
 						// Add to calendar select dropdown
@@ -689,7 +763,7 @@ $user_id = $_SESSION["user_id"];
 						sharedHeader.innerText = 'Shared Calendars';
 						calendarNamesContainer.appendChild(sharedHeader);
 
-						sharedCalendars.forEach(createCalendarItem);
+						sharedCalendars.forEach(calendar => createCalendarItem(calendar, true));
 					}
 
 					// Populate personal calendars
@@ -699,7 +773,7 @@ $user_id = $_SESSION["user_id"];
 						personalHeader.innerText = 'Personal Calendars';
 						calendarNamesContainer.appendChild(personalHeader);
 
-						personalCalendars.forEach(createCalendarItem);
+						personalCalendars.forEach(calendar => createCalendarItem(calendar, false));
 					}
 				} else {
 					console.error('Error fetching calendar names:', data.msg);

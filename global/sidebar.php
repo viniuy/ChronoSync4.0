@@ -54,6 +54,8 @@
                 width: 300px;
                 max-width: 100%;
                 position: relative;
+                justify-content: flex-end;
+
             }
 
             .toolbar {
@@ -63,6 +65,8 @@
                 padding: 5px;
                 border-radius: 5px;
                 margin-bottom: 10px;
+                margin: 0 auto;
+                width: 90%;
             }
 
             .toolbar button {
@@ -82,38 +86,53 @@
 
             #editor {
                 background-color: #E2F1FF;
-                border: none;
-                color: black;
+                border: 1px solid #ccc;
                 padding: 10px;
+                box-sizing: border-box;
+                color: black;
                 min-height: 150px;
-                width: calc(100% - 20px);
+                width: 90%;
+                height: 210px; /* Adjust height as needed */
+                margin: 0 auto;
                 border-radius: 5px;
                 overflow-y: auto;
+                position: relative;
+
             }
+
+
 
             #editor:focus {
                 outline: none;
             }
 
             .placeholder {
-                color: #aaa;
-            }
+    color: #999;
+    font-style: italic;
+}
+
+.toolbar {
+    display: flex;
+    margin-top: 1px; 
+}
+
         </style>
     </head>
     <body>
 
+    
 
-    <div class="editor-container">
+
+    <!-- <div class="editor-container">
  <div class="color-selector">
         <select onchange="changeColor(this.value)">
             <option value="">Change Color</option>
-            <option value="green">green</option>
-            <option value="yellow">Yellow</option>
-            <option value="grey">Grey</option>
-            <option value="pink">Pink</option>
-        </select>
-    </div>
-</div>
+            <option value="green"style="background-color: green;">green</option>
+            <option value="yellow"style="background-color: yellow;">Yellow</option>
+            <option value="grey"style="background-color: grey;">Grey</option>
+            <option value="pink"style="background-color: pink;">Pink</option>
+        </select> -->
+
 
         <div id="editor" contenteditable="true" class="placeholder">Take a note...</div>
         <div class="toolbar">
@@ -123,10 +142,12 @@
             <button onclick="execCmd('strikeThrough')"><s>ab</s></button>
             <button onclick="execCmd('insertUnorderedList')">&#8226;</button>
             <input type="file" id="imageUploader" onchange="uploadImage()" style="display:none;">
+            
             <button onclick="document.getElementById('imageUploader').click()">&#128247;</button>
         </div>
     </div>
-
+    </div>
+</div>
     <script>
         document.getElementById('editor').addEventListener('focus', function() {
             if (this.textContent === 'Take a note...') {
@@ -165,9 +186,9 @@
     switch (color) {
         case 'green':
             editor.style.backgroundColor = 'green';
-            editor.style.color = 'black'; /* Change text color in editor if needed */
+            editor.style.color = 'black'; 
             toolbar.style.backgroundColor = 'green';
-            toolbar.style.color = 'white'; /* Set toolbar font color to white */
+            toolbar.style.color = 'white'; 
             break;
         case 'yellow':
             editor.style.backgroundColor = 'yellow';
@@ -188,10 +209,10 @@
             toolbar.style.color = 'black';
             break;
         default:
-            editor.style.backgroundColor = '#E2F1FF'; /* Default background color */
-            editor.style.color = 'black'; /* Default text color */
-            toolbar.style.backgroundColor = '#E2F1FF'; /* Default background color */
-            toolbar.style.color = 'black'; /* Default text color */
+            editor.style.backgroundColor = '#E2F1FF'; 
+            editor.style.color = 'black';
+            toolbar.style.backgroundColor = '#E2F1FF'; 
+            toolbar.style.color = 'black'; 
             break;
     }
 }
@@ -201,7 +222,6 @@
 
     </script>
 
-<!-- Sticky Note Modal -->
 
 
 		</ul>

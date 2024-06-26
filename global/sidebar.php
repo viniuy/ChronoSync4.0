@@ -49,12 +49,15 @@
 
             .editor-container {
                 color: white;
-                padding: 10px;
+                padding: 1px;
                 border-radius: 10px;
                 width: 300px;
                 max-width: 100%;
                 position: relative;
                 justify-content: flex-end;
+
+                background-color: #E2F1FF;
+
 
             }
 
@@ -131,8 +134,8 @@
             <option value="yellow"style="background-color: yellow;">Yellow</option>
             <option value="grey"style="background-color: grey;">Grey</option>
             <option value="pink"style="background-color: pink;">Pink</option>
-        </select> -->
-
+        </select>
+        </div></div> -->
 
         <div id="editor" contenteditable="true" class="placeholder">Take a note...</div>
         <div class="toolbar">
@@ -145,9 +148,8 @@
             
             <button onclick="document.getElementById('imageUploader').click()">&#128247;</button>
         </div>
-    </div>
-    </div>
-</div>
+    
+
     <script>
         document.getElementById('editor').addEventListener('focus', function() {
             if (this.textContent === 'Take a note...') {

@@ -23,9 +23,8 @@ require_once 'global/head.php'
 		</div>
 	</div>
 	<!--*******************
-        Preloader end
-    ********************-->
-
+		Preloader end
+	********************-->
 	<div id="main-wrapper">
 		<?php
 		require_once 'global/nav_header.php';
@@ -44,49 +43,14 @@ require_once 'global/head.php'
 		}
 		?>
 
-
-		<!--**********************************
-            Content body start
-        ***********************************-->
-
-
-
-		<!--**********************************
-            Content body end
-        ***********************************-->
-
-
-
-
-		<!--**********************************
-            Footer start
-        ***********************************-->
 		<div class="footer">
 			<div class="copyright">
 
 			</div>
 		</div>
-		<!--**********************************
-            Footer end
-        ***********************************-->
-
-		<!--**********************************
-           Support ticket button start
-        ***********************************-->
-
-		<!--**********************************
-           Support ticket button end
-        ***********************************-->
 
 
 	</div>
-	<!--**********************************
-        Main wrapper end
-    ***********************************-->
-
-	<!--**********************************
-        Scripts
-    ***********************************-->
 	<!-- Required vendors -->
 	<script src="vendor/global/global.min.js"></script>
 	<script src="vendor/chart.js/Chart.bundle.min.js"></script>

@@ -305,7 +305,7 @@ $user_id = $_SESSION["user_id"];
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" onclick="save_event()">Save Event</button>
+					<button type="button" class="btn btn-primary savebtn" onclick="save_event()" >Save Event</button>
 				</div>
 			</div>
 		</div>
@@ -318,6 +318,8 @@ $user_id = $_SESSION["user_id"];
 
 
 <script>
+
+
 	$(document).ready(function() {
 		fetchCalendarNames(<?php echo json_encode($user_id); ?>);
 		fetchGroups();
@@ -980,8 +982,8 @@ $user_id = $_SESSION["user_id"];
 			data: {
 				event_id: event.id,
 				event_name: event.title,
-				start_datetime: localStart, // Send datetime in YYYY-MM-DD HH:mm format
-				end_datetime: localEnd // Same format as start
+				start_datetime: localStart,
+				end_datetime: localEnd
 			},
 			success: function(response) {
 				console.log('Event updated successfully');
@@ -992,10 +994,9 @@ $user_id = $_SESSION["user_id"];
 		});
 	}
 
-	// Function to format date as YYYY-MM-DD HH:mm
 	function formatDate(date) {
 		var year = date.getFullYear();
-		var month = ('0' + (date.getMonth() + 1)).slice(-2); // Months are zero indexed
+		var month = ('0' + (date.getMonth() + 1)).slice(-2); 
 		var day = ('0' + date.getDate()).slice(-2);
 		var hours = ('0' + date.getHours()).slice(-2);
 		var minutes = ('0' + date.getMinutes()).slice(-2);
@@ -1011,6 +1012,7 @@ $user_id = $_SESSION["user_id"];
 		var event_end_date = $("#event_end_date").val();
 		var event_end_time = $("#event_end_time").val();
 		var calendar_id = $("#calendar_select_options").val();
+		
 
 		// Check for required fields
 		if (event_name === "" || event_start_date === "" || event_end_date === "" || calendar_id === "") {
@@ -1024,11 +1026,9 @@ $user_id = $_SESSION["user_id"];
 
 		}
 
-		// Combine date and time for start and end if time is provided
 		var event_start = event_start_date + (event_start_time ? " " + event_start_time + ":00" : '');
 		var event_end = event_end_date + (event_end_time ? " " + event_end_time + ":00" : '');
 
-		// AJAX request to check user role before saving the event
 		$.ajax({
 			url: "../auth/calendar/save_event.php",
 			type: "POST",
@@ -1039,7 +1039,7 @@ $user_id = $_SESSION["user_id"];
 				event_end_date: event_end,
 				calendar_id: calendar_id,
 				user_id: user_id,
-				check_role: true // Add this parameter to check user role
+				check_role: true 
 			},
 			success: function(response) {
 				console.log("Save event response: ", response);

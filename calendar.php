@@ -105,14 +105,11 @@ require_once 'global/head.php'
     <script src="vendor/peity/jquery.peity.min.js"></script>
 	<!-- Dashboard 1 -->
 	<script src="js/dashboard/dashboard-1.js"></script>
-	
 	<script src="vendor/owl-carousel/owl.carousel.js"></script>
-	
     <script src="js/custom.min.js"></script>
 	<script src="js/dlabnav-init.js"></script>
 	<script src="js/demo.js"></script>
     <script src="js/styleSwitcher.js"></script>
-
 	<script src="vendor/fullcalendar/js/main.min.js"></script>
 	<script src="js/plugins-init/calendar.js"></script>
 
@@ -120,10 +117,6 @@ require_once 'global/head.php'
 	<script>
 		function cardsCenter()
 		{
-			
-			/*  testimonial one function by = owl.carousel.js */
-			
-	
 			
 			jQuery('.card-slider').owlCarousel({
 				loop:true,
